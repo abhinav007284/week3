@@ -1,0 +1,130 @@
+STEP 1: Configure Webhook in GitHub
+1. Open your GitHub Repository → Settings → Webhooks
+2. Click “Add Webhook”
+
+Fill the form:
+
+Field	Value
+Payload URL	http://<your-public-url>/github-webhook/
+Example (if using ngrok):	http://1234abcd.ngrok.io/github-webhook/
+Content type	application/json
+Secret	(leave empty unless using one)
+Events	Choose: Just the push event
+Click: Add Webhook
+📸 Screenshot to take
+
+A screenshot showing:
+
+Payload URL
+
+Content type
+
+“Last delivery: Success” or green tick
+
+Push event selection
+
+⚠ IMPORTANT
+
+If your Jenkins is local, you MUST run ngrok to expose port 8080.
+
+Command
+ngrok http 8080
+
+
+Copy the Forwarding URL and use it in the GitHub webhook.
+
+✅ STEP 2: Configure Jenkins to Receive Webhook
+Install Plugin
+Manage Jenkins → Plugins → GitHub Integration Plugin
+
+Enable webhook trigger inside your Jenkins job
+
+For a Freestyle Project:
+
+Build Triggers → GitHub hook trigger for GITScm polling
+
+
+For a Pipeline Job:
+
+Inside Jenkinsfile add:
+
+pipeline {
+    agent any
+    triggers {
+        githubPush()
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo "Code build triggered from GitHub webhook!"
+            }
+        }
+    }
+}
+
+✅ STEP 3: Push a Code Change
+
+Modify any file:
+
+echo "// test change" >> test.java
+git add .
+git commit -m "webhook test"
+git push origin main
+
+✅ STEP 4: Jenkins Auto-Triggered Build
+
+When you push → GitHub sends webhook → Jenkins automatically starts a build.
+
+On Jenkins Dashboard:
+
+You will see:
+
+Started by GitHub push by <username>
+Running on Jenkins in /var/lib/jenkins/workspace/<project>
+[Pipeline] Start
+...
+[Pipeline] echo
+Code build triggered from GitHub webhook!
+[Pipeline] End
+Finished: SUCCESS
+
+📸 Screenshot to take
+
+Jenkins job with status: Started by GitHub push
+
+Console Output showing:
+
+Code build triggered from GitHub webhook!
+Finished: SUCCESS
+
+📚 FINAL ANSWER FORMAT (SUBMIT THIS IN EXAM)
+Q3 – Working with Webhooks to Trigger Jenkins Builds
+1. Webhook Setup in GitHub
+
+Configured webhook at:
+http://<ngrok-url>/github-webhook/
+
+Content type: application/json
+
+Event: Push
+
+Screenshot attached: GitHub webhook settings page
+
+2. Code Push
+
+Commands pushed:
+
+echo "// test change" >> test.java
+git add .
+git commit -m "webhook test"
+git push origin main
+
+3. Jenkins Auto Trigger
+
+Jenkins job automatically started.
+
+Console log shows:
+
+Started by GitHub push
+Code build triggered from GitHub webhook!
+Finished: SUCCESS
