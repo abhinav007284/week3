@@ -1,0 +1,113 @@
+✅ Step 1: Start Minikube
+Command
+minikube start
+
+Expected Output (sample)
+😄  minikube v1.34.0 on Ubuntu 20.04
+✨  Using docker driver
+👍  Starting control plane node minikube in cluster minikube
+🏄  Done! Kubectl is now configured to use "minikube" cluster.
+
+✅ Step 2: Create Deployment for Nginx
+Command
+kubectl create deployment nginx-deploy --image=nginx
+
+Expected Output
+deployment.apps/nginx-deploy created
+
+(Optional for exam) Verify deployment:
+kubectl get deployments
+
+
+Expected:
+
+NAME            READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy    1/1     1            1           10s
+
+✅ Step 3: Expose Deployment as Service on port 8090
+Command
+kubectl expose deployment nginx-deploy --type=NodePort --port=80
+
+Expected Output
+service/nginx-deploy exposed
+
+
+Now we get the NodePort assigned:
+
+kubectl get svc
+
+Expected Output
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+nginx-deploy    NodePort    10.96.54.120    <none>        80:3XXXX/TCP   30s
+
+
+PORT → 3XXXX is the NodePort value.
+
+✅ Step 4: Map NodePort to host port 8090 (Minikube command)
+
+This exposes service directly on localhost:8090
+
+Command
+minikube service nginx-deploy --url
+
+Expected Output
+http://127.0.0.1:8090
+
+
+⚠️ In the exam, if it gives another port like http://127.0.0.1:30080,
+You run:
+
+minikube service nginx-deploy --url | sed 's/[0-9]\+$/8090/'
+
+
+But safest: simply note the URL shown and open it.
+
+✅ Step 5: Verify Nginx in Browser (localhost:8090)
+
+👉 Open:
+
+http://localhost:8090
+
+Expected
+
+Nginx default welcome page:
+
+Welcome to nginx!
+
+
+(Take screenshot for proof.)
+
+✅ Step 6: List All Pods and Services
+Commands
+kubectl get pods
+kubectl get svc
+
+Expected Output
+
+Pods:
+
+NAME                             READY   STATUS    RESTARTS   AGE
+nginx-deploy-6c79bc447d-xp9fz    1/1     Running   0          3m
+
+
+Services:
+
+NAME            TYPE        CLUSTER-IP       PORT(S)           AGE
+nginx-deploy    NodePort    10.96.54.120     80:30080/TCP      3m
+kubernetes      ClusterIP   10.96.0.1        443/TCP           10m
+
+📌 FINAL EXAM SUBMISSION FORMAT
+
+Below is what you will copy into your answer sheet:
+
+Q2 – Minikube (Nginx Deployment)
+Commands Executed
+minikube start
+kubectl create deployment nginx-deploy --image=nginx
+kubectl expose deployment nginx-deploy --type=NodePort --port=80
+kubectl get pods
+kubectl get svc
+minikube service nginx-deploy --url
+
+Browser Verification
+http://localhost:8090  → shows "Welcome to nginx!"
