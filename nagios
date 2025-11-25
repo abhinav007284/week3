@@ -1,0 +1,100 @@
+Step 1: Pull the Official Nagios Docker Image
+
+👉 Use the most common Nagios image: jasonrivers/nagios
+
+Command
+docker pull jasonrivers/nagios:latest
+
+Expected Output
+latest: Pulling from jasonrivers/nagios
+Digest: sha256:xxxxxxxxxxxxxxxxxxxx
+Status: Downloaded newer image for jasonrivers/nagios:latest
+docker.io/jasonrivers/nagios:latest
+
+✅ Step 2: Run Nagios Container (Expose Ports)
+
+Nagios typically uses:
+
+Port 80 → Web UI
+
+Volume mounts → for configs (optional)
+
+Command
+docker run --name nagios \
+ -p 8080:80 \
+ -d jasonrivers/nagios:latest
+
+Expected Output
+<container_id>
+
+
+Check container is running:
+
+docker ps
+
+
+Expected:
+
+CONTAINER ID   IMAGE                     PORTS                 NAMES
+abc123xyz      jasonrivers/nagios        0.0.0.0:8080->80/tcp  nagios
+
+✅ Step 3: Access Nagios Web Interface
+URL
+http://localhost:8080/nagios
+
+Default Login (for this image)
+
+Username: nagiosadmin
+
+Password: nagios
+
+✅ Step 4: Show CPU, Memory & Service Uptime Monitoring
+
+Once logged in:
+
+✔ Go to "Host Status"
+✔ Go to "Service Detail"
+✔ You will see:
+
+CPU Load
+
+Memory Usage
+
+Swap Usage
+
+Uptime
+
+HTTP / SSH checks
+
+Screenshot to Capture
+
+Your screenshot should show:
+
+Nagios Core
+Service Status
+Host: localhost
+Services:
+    PING – OK
+    Current Load – OK
+    Current Users – OK
+    Disk Usage – OK
+    HTTP – OK
+    Memory Usage – OK
+    SSH – OK
+    Uptime – OK
+
+📌 FINAL EXAM SUBMISSION FORMAT (Copy/Paste Ready)
+Q3 – Nagios Monitoring using Docker
+Commands Executed
+docker pull jasonrivers/nagios:latest
+
+docker run --name nagios \
+ -p 8080:80 \
+ -d jasonrivers/nagios:latest
+
+docker ps
+
+Web Access
+URL: http://localhost:8080/nagios
+Username: nagiosadmin
+Password: nagios
