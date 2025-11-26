@@ -26,7 +26,7 @@ nginx-deploy    1/1     1            1           10s
 
 ✅ Step 3: Expose Deployment as Service on port 8090
 Command
-kubectl expose deployment nginx-deploy --type=NodePort --port=80
+kubectl expose deployment nginx-deploy --type=NodePort --port=80 --target-pot=80
 
 Expected Output
 service/nginx-deploy exposed
