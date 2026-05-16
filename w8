@@ -1,196 +1,375 @@
-I.	Steps for MavenJava Automation:
-Maven Java Automation Steps:
- Step 1: Open Jenkins (localhost:8080)
-   	 ├── Click on "New Item" (left side menu
-Step 2: Create Freestyle Project (e.g., MavenJava_Build)
-        	├── Enter project name (e.g., MavenJava_Build)
-        	├── Click "OK"
-└── Configure the project:
-            		├── Description: "Java Build demo"
-            		├── Source Code Management:
-            			└── Git repository URL: [GitMavenJava repo URL]
-            		├── Branches to build: */Main   or  */master
-  		└── Build Steps:
-               	     ├── Add Build Step -> "Invoke top-level Maven targets"
-                  		└── Maven version: MAVEN_HOME
-                 		└── Goals: clean
-                	├── Add Build Step -> "Invoke top-level Maven targets"
-                		└── Maven version: MAVEN_HOME
-                		└── Goals: install
-                	└── Post-build Actions:
-                    	       ├── Add Post Build Action -> "Archive the artifacts"
-                    			└── Files to archive: **/*
-                    	     ├── Add Post Build Action -> "Build other projects"
-                    			└── Projects to build: MavenJava_Test
-                    			└── Trigger: Only if build is stable
-                    	     └── Apply and Save
+2. ELASTIC BLOCK STORAGE 
+Elastic Block Storage (EBS) is a high-performance, persistent block storage service 
+provided by Amazon Web Services for use with virtual servers. 
+It allows you to store data reliably and access it like a traditional hard drive attached to your 
+cloud instance. 
+1. Create and attach an EBS volume to an EC2 instance, and scale the instance by increasing CPU 
+and RAM by changing the instance type. 
+2. Attach and permanently mount an EBS volume to a Linux EC2 instance to ensure data 
+persistence across reboots. 
+3. Create a snapshot of the attached EBS volume and use it to create and attach a new volume to 
+an EC2 instance in another AWS region. 
+1 Create and attach an EBS volume to an EC2 instance, and  
+• scale the instance by increasing CPU and RAM by changing the instance type. 
+• Creating  and attaching  an EBS volume to an EC2 instance 
 
+ 
+  22 
+ 
+Step 1: Create a New EBS Volume  
+Open the EC2 Dashboard. 
+From the left-hand menu, select Volumes under Elastic Block Store (EBS). 
+Click Create Volume. 
+Choose: 
+Volume type (gp3/gp2) 
+Size of the volume 
+Availability Zone (must be the same as the EC2 instance) 
+Click Create Volume. 
+ 
+  23 
+Step 2: Attach the EBS Volume to the Existing EC2 Instance 
+In the Volumes section, select the newly created volume. 
+Click Actions → Attach Volume. 
+Select the target EC2 instance from the list. 
+Specify the device name (example: /dev/xvdf). 
+Click Attach. 
+ 
+ 
+  24 
+Step 3: Verify the Volume on the EC2 Instance 
+Connect to the EC2 instance using SSH. 
+Check the attached disks: 
+lsblk 
+Identify the new volume (e.g., /dev/xvdf). 
+ 
+Note: Ensure that the EBS volume and the EC2 instance belong to the same Availability Zone, 
+as cross-AZ attachment is not supported. 
 
-    └── Step 3: Create Freestyle Project (e.g., MavenJava_Test)
-        	├── Enter project name (e.g., MavenJava_Test)
-        	├── Click "OK"
-              └── Configure the project:
-             ├── Description: "Test demo"
-             ├── Build Environment:
-            		└── Check: "Delete the workspace before build starts"
-            ├── Add Build Step -> "Copy artifacts from another project"
-            		└── Project name: MavenJava_Build
-            		└── Build: Stable build only  // tick at this
-            		└── Artifacts to copy: **/*
-            ├── Add Build Step -> "Invoke top-level Maven targets"
-            		└── Maven version: MAVEN_HOME
-            		└── Goals: test
-            		└── Post-build Actions:
-                ├── Add Post Build Action -> "Archive the artifacts"
-                	└── Files to archive: **/*
-                	└── Apply and Save
-
-    └── Step 4: Create Pipeline View for Maven Java project
-        ├── Click "+" beside "All" on the dashboard
-        ├── Enter name: MavenJava_Pipeline
-        ├── Select "Build pipeline view"         // tick here
-         |--- create
-        └── Pipeline Flow:
-            ├── Layout: Based on upstream/downstream relationship
-            ├── Initial job: MavenJava_Build
-            └── Apply and Save OK
-
-    └── Step 5: Run the Pipeline and Check Output
-        ├── Click on the trigger to run the pipeline
-        ├── click on the small black box to open the console to check if the build is success
-            Note : 
-1.	If build is success and the test project is also automatically triggered with name       
-                      “MavenJava_Test”
-2.	The pipeline is successful if it is in green color as shown ->check the console of the test project
-3.	The test project is successful and all the artifacts are archived successfully
-II. Maven Web Automation Steps:
-└── Step 1: Open Jenkins (localhost:8080)
-    ├── Click on "New Item" (left side menu)
-    
-    └── Step 2: Create Freestyle Project (e.g., MavenWeb_Build)
-        ├── Enter project name (e.g., MavenWeb_Build)
-        ├── Click "OK"
-        └── Configure the project:
-            ├── Description: "Web Build demo"
-            ├── Source Code Management:
-            		└── Git repository URL: [GitMavenWeb repo URL]
-            ├── Branches to build: */Main or master
-            └── Build Steps:
-                ├── Add Build Step -> "Invoke top-level Maven targets"
-                	└── Maven version: MAVEN_HOME
-                	 └── Goals: clean
-                ├── Add Build Step -> "Invoke top-level Maven targets"
-                	└── Maven version: MAVEN_HOME
-                	└── Goals: install
-                └── Post-build Actions:
-                    ├── Add Post Build Action -> "Archive the artifacts"
-                   	 └── Files to archive: **/*
-                    ├── Add Post Build Action -> "Build other projects"
-                    	└── Projects to build: MavenWeb_Test
-                    	└── Trigger: Only if build is stable
-                    └── Apply and Save
-
-    └── Step 3: Create Freestyle Project (e.g., MavenWeb_Test)
-        ├── Enter project name (e.g., MavenWeb_Test)
-        ├── Click "OK"
-        └── Configure the project:
-            ├── Description: "Test demo"
-            ├── Build Environment:
-            		└── Check: "Delete the workspace before build starts"
-            ├── Add Build Step -> "Copy artifacts from another project"
-            		└── Project name: MavenWeb_Build
-            		└── Build: Stable build only
-            		└── Artifacts to copy: **/*
-            ├── Add Build Step -> "Invoke top-level Maven targets"
-           		└── Maven version: MAVEN_HOME
-            		└── Goals: test
-            └── Post-build Actions:
-                ├── Add Post Build Action -> "Archive the artifacts"
-                	└── Files to archive: **/*
-                ├── Add Post Build Action -> "Build other projects"
-                	└── Projects to build: MavenWeb_Deploy
-                └── Apply and Save
-
-    └── Step 4: Create Freestyle Project (e.g., MavenWeb_Deploy)
-        ├── Enter project name (e.g., MavenWeb_Deploy)
-        ├── Click "OK"
-        └── Configure the project:
-            ├── Description: "Web Code Deployment"
-            ├── Build Environment:
-            		└── Check: "Delete the workspace before build starts"
-            ├── Add Build Step -> "Copy artifacts from another project"
-            		└── Project name: MavenWeb_Test
-            		└── Build: Stable build only
-               	└── Artifacts to copy: **/*
-            └── Post-build Actions:
-                ├── Add Post Build Action -> "Deploy WAR/EAR to a container"
-   └── WAR/EAR File: **/*.war
-   └── Context path: Webpath
- └── Add container -> Tomcat 9.x remote
-└── Credentials: Username: admin, Password: 1234
-── Tomcat URL: https://localhost:8085/
-                └── Apply and Save
-
-    └── Step 5: Create Pipeline View for MavenWeb
-        ├── Click "+" beside "All" on the dashboard
-        ├── Enter name: MavenWeb_Pipeline
-        ├── Select "Build pipeline view"
-        └── Pipeline Flow:
-            ├── Layout: Based on upstream/downstream relationship
-            ├── Initial job: MavenWeb_Build
-            └── Apply and Save
-
-    └── Step 6: Run the Pipeline and Check Output
-        ├── Click on the trigger “RUN” to run the pipeline
-            Note: 
-1.	After Click on Run -> click on the small black box to open the console to check if the build is success
-2.	Now we see all the build has  success if it appears in green color
-        ├── Open Tomcat homepage in another tab
-        ├── Click on the "/webpath" option under the manager app
-               Note:
-1.	 It ask for user credentials for login ,provide the credentials of tomcat.
-2.	It provide the page with out project name which is highlighted.
-3.	After clicking on our project we can see output.
-
-
-
-
-
-
-
-
-
-Here code for pipeline -script
-	
-Copy the code there
--------------------------------------------------------------------------------------------------------------------------
-pipeline {
-    agent any
-    tools{
-        maven 'MAVEN-HOME'
-    }
-    stages {
-        stage('git repo & clean') {
-            steps {
-                //bat "rmdir  /s /q mavenjava"
-                bat "git clone provide your github link"
-                bat "mvn clean -f mavenjava"
-            }
-        }
-        stage('install') {
-            steps {
-                bat "mvn install -f mavenjava" #project name#
-            }
-        }
-        stage('test') {
-            steps {
-                bat "mvn test -f mavenjava"
-            }
-        }
-        stage('package') {
-            steps {
-                bat "mvn package -f mavenjava"
-            }
-        }
-    }
-}
+  25 
+Procedure: increasing/decreasing  of CPU and RAM 
+   Step 1.  - Navigate to the EC2 dashboard. 
+   Step 2. - Stop the EC2 instance associated with the EBS volume. 
+  Step 3.  - Click "Actions" and then—instance settings—change the instance type"Modify 
+Volume". 
+   Step 4. -Increase/ decrease the size or change the volume type to a higher performance 
+specification. 
+    Step 5. - Click "Modify" to apply the changes. 
+    Step 6:  Now the start the machine you see with increase /decrease of size and performance 
+ 
+  26 
+2.Attach and permanently mount an EBS volume to a Linux EC2 instance to ensure data 
+persistence across reboots. 
+Step 1: Create an EBS Volume 
+7. Log in to AWS Management Console 
+8. Go to EC2 → Volumes 
+9. Click Create Volume 
+10. Choose: 
+1. Volume Type: gp3 (recommended) 
+2. Size: (e.g., 20 GB) 
+3. Availability Zone: Same AZ as EC2 instance 
+11. Click Create Volume 
+ 
+ 
+  27 
+Step 2: Attach the EBS Volume to EC2 
+• Select the newly created EBS volume 
+• Click Actions → Attach Volume 
+• Choose: 
+o Instance: Select your Linux EC2 instance 
+o Device name: /dev/xvdf 
+• Click Attach 
+ 
+ 
+  28 
+Step 3: Connect to the EC2 Instance 
+Connect using SSH: 
+ssh -i key.pem ec2-user@<public-ip> 
+ 
+ 
+Step 4: Verify the Attached Disk 
+Check all available disks: 
+lsblk 
+You will see: 
+• Root volume: /dev/xvda 
+• New volume: /dev/xvdf (no partition yet) 
+Check filesystem: 
+lsblk -fs 
+  29 
+ 
+ 
+Step 5: Create a Partition 
+Create a partition on the new volume: 
+fdisk /dev/nme1n1 
+Inside fdisk: 
+• Press m → Help menu 
+• Press n → New partition 
+• Press p → Primary partition 
+• Press Enter → Default partition number 
+• Press Enter → Default first sector 
+• Press Enter → Default last sector (use full disk) 
+• Press w → Write changes and exit 
+  30 
+ 
+ 
+ 
+ 
+ 
+ 
+  31 
+Step 6: Verify the New Partition 
+lsblk -fs 
+You should now see: 
+/dev/xvdf1 
+ 
+ 
+Step 7: Format the Partition 
+Format with XFS filesystem: 
+mkfs.xfs /dev/xvdf1 
+Verify: 
+lsblk -fs 
+  32 
+ 
+ 
+ 
+ 
+ 
+ 
+  33 
+Step 8: Create a Mount Directory 
+mkdir /mnt/cseb 
+ 
+ 
+Step 9: Mount the Volume 
+mount /dev/xvdf1 /mnt/savitha 
+Verify: 
+df -h 
+ 
+  34 
+ 
+ 
+Step 10: Make the Mount Persistent 
+Get the UUID of the volume: 
+blkid /dev/xvdf1 
+Edit fstab: 
+nano /etc/fstab 
+Add this line at the end: 
+UUID= 8a979da3-1950-4810-bc0a-62c7a039d5cf  /mnt/cseb  xfs   defaults,nofail   0   0 
+Save and exit. 
+Test fstab: 
+mount -a 
+ 
+ 
+  35 
+ 
+ 
+ 
+ 
+ 
+ 
+  36 
+Step 11: Verify Persistence 
+13. Reboot the instance: 
+reboot 
+10. Reconnect and check: 
+df -h 
+Volume should be mounted automatically. 
+ 
+ 
+Step 12: Detach and Reattach Volume (Data Recovery Scenario) 
+Detach: 
+3. EC2 → Volumes → Select volume 
+4. Actions → Detach volume 
+ 
+ 
+ 
+ 
+  37 
+Attach to another EC2 instance: 
+6. Attach to new instance (same AZ) 
+7. Login to new instance 
+8. Create mount directory: 
+mkdir /mnt/archana 
+6. Mount the volume: 
+mount /dev/xvdf1 /mnt/archana 
+ All previous data will be available 
+ 
+ 
+ 
+Summary Flow 
+Create Volume → Attach → lsblk → fdisk → mkfs → mkdir → mount → fstab → reboot 
+ 
+ 
+  38 
+3.Create a snapshot of the attached EBS volume and use it to create and attach a new volume to 
+an EC2 instance in another AWS region. 
+Attaching Volumes across regions of EC2 using the snapshot 
+To create a snapshot of an EBS volume and attach it to an instance in another region in AWS, 
+you'll need to follow these steps: 
+Step 1. Create a Snapshot: 
+   a. Sign in to the AWS Management Console. 
+   b. Navigate to the EC2 Dashboard. 
+   c. Click on "Volumes" in the left-hand navigation pane. 
+   d. Select the EBS volume you want to create a snapshot of. 
+   e. Click on the "Actions" dropdown menu above the volume list and select "Create Snapshot." 
+   f. Provide a name and description for the snapshot. 
+   g. Click on the "Create Snapshot" button to initiate the snapshot creation process. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  39 
+Step 2. Copy the Snapshot to Another Region: 
+   a. Once the snapshot is created, go to the "Snapshots" section in the EC2 Dashboard. 
+   b. Select the snapshot you just created. 
+   c. Click on the "Actions" dropdown menu above the snapshot list and select "Copy Snapshot." 
+   d. Choose the destination region where you want to copy the snapshot. 
+   e. Click on the "Copy Snapshot" button to initiate the copy process. This may take some time 
+depending on the size of the snapshot and the network speed. 
+ 
+Step 3. Monitor the Snapshot Copy Progress: 
+   a. You can monitor the progress of the snapshot copy by navigating to the "Snapshots" section 
+in the EC2 Dashboard of the source region. 
+   b. Look for the snapshot you copied and check its status. It will change from "pending" to 
+"completed" once the copy process is finished. 
+  40 
+ 
+ 
+Step 4. Switch to the Destination Region: 
+• Use the region selector in the top-right corner of the AWS Management Console to switch 
+to the destination region where you copied the snapshot. 
+ 
+ 
+ 
+  41 
+Step 5. Create a Volume from the Snapshot: 
+   a. In the EC2 Dashboard of the destination region, go to the "Snapshots" section. 
+   b. Find the snapshot you copied from the source region. 
+   c. Click on the snapshot, then click on the "Actions" dropdown menu and select "Create 
+Volume." 
+   d. Configure the volume settings, such as volume type, size, and availability zone. 
+   e. Click on the "Create Volume" button to create the volume from the snapshot. 
+ 
+Step 6. Create the ec2 instance & Attach the Volume to an Instance: 
+   a. Once the volume is created, navigate to the "Volumes" section in the EC2 Dashboard. 
+   b. Find the newly created volume and select it. 
+   c. Click on the "Actions" dropdown menu and select "Attach Volume." 
+   D  the EC2 instance to which you want to attach the volume and specify the device name. 
+   e. Click on the "Attach" button to attach the volume to the instance. 
+  42 
+ 
+ 
+We have created a snapshot of an EBS volume, copied it to another region, created a volume from 
+the snapshot, and attached it to an instance in the destination region. 
+ 
+ 
+ 
+ 
+ 
+  43 
+3. ELASTIC FILE STORAGE 
+Elastic File Storage (EFS) is a scalable file storage service provided by Amazon Web Services 
+that allows multiple systems to access shared files simultaneously. 
+It automatically grows and shrinks as you add or remove data, making it ideal for applications 
+that need flexible, shared storage. 
+Step 1: Launching EC2 Instances 
+1. Sign in to AWS Management Console. 
+ 
+ 
+  44 
+2. Go to the EC2 dashboard. 
+3. Click on "Launch Instance". 
+ 
+ 
+  45 
+4. Configure instance details: 
+   - Instance Name: EFS-1 
+5. Choose an Amazon Machine Image (AMI) for Linux. 
+ 
+ 
+  46 
+6. Select instance type: t2.micro. 
+   - Key Pair: kgf 
+ 
+ - Network: Choose Subnet-1a 
+   - Security Group: Create a new security group (SG) and add NFS and allow from anywhere. 
+7. Launch the instance. 
+  47 
+ 
+8. Repeat the above steps to launch another instance named EFS-2 in Subnet-1c with the same 
+configuration. 
+ 
+ 
+ 
+  48 
+ 
+Step 2: Creating an EFS File System 
+1. Go to the EFS service in the AWS Management Console. 
+2. Click on "Create file system". 
+ 
+3. Specify details: 
+  49 
+   - Name: Optional 
+   - VPC: Default 
+   - Enable region button. 
+Click on "Next". 
+ 
+4. In the Network settings: 
+   - Delete all security groups. 
+   - Select the newly created security group (NFS).---which is created while creating instance 
+ Click on "Next" and review the configuration. 
+Click on "Create file system". 
+ 
+  50 
+ 
+ 
+Step 3: Accessing the two EC2 instances named EFS-1 & EFS -2 in two different PowerShell 
+sessions and performing the specified tasks: 
+Accessing EFS-1 Instances in Two Different PowerShell Sessions: 
+1. Open Two PowerShell Sessions: 
+   - Open two separate PowerShell windows or tabs on your local machine. 
+  51 
+2. SSH into the Instance: 
+   - Use the SSH command to connect to the EFS-1 instance 
+          ssh -i [path-to-your-keypair.pem] ec2-user@[instance-public-ip] 
+ 
+ 
+3. Switch to Root User: 
+   - Gain root access by executing the following command: 
+         sudo su 
+    4. Create a Directory: 
+   - Make a directory named "efs" using the following command: 
+          mkdir efs 
+     5. Install Amazon EFS Utilities: 
+   - Use yum package manager to install the Amazon EFS utilities: 
+         yum install -y amazon-efs-utils 
+  52 
+ 
+     6. List Files: 
+   - Execute the following command to list files in the current directory: 
+          ls 
+     7. Verify Installation (Optional): 
+   - Optionally, you can verify the installation of the Amazon EFS utilities by checking the 
+version: 
+         efs-utils --version 
+  53 
+ 
+Step 4: Attaching EFS to EC2 Instances 
+1. Go to the EFS service in the AWS Management Console. 
+2. Click on the target EFS file system. 
+3. Click on the "Attach" button. 
+ 
+4. Choose "Mount via DNS" option. 
+  54 
+ 
+5. Copy the displayed command. ,on both ec2 instances(powershell) 
+6. Paste and execute the copied command in the terminal to mount the EFS file system onto the 
+instance. 
+ 
+Step 5: Verify and Test EFS 
+1. Change the directory to EFS on both instances. 
+  55 
+2. Create a file on one instance. 
+3. Verify that the file automatically synchronizes and appears on the other instance. 
